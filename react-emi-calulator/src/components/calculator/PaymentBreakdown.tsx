@@ -2,9 +2,9 @@ import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {formatCurrency} from "@/lib/utils";
 
 interface PaymentBreakdownProps {
-	principal: number;
-	totalInterest: number;
-	isCalculated: boolean;
+    principal: number;
+    totalInterest: number;
+    isCalculated: boolean;
 }
 
 export function PaymentBreakdown({principal, totalInterest, isCalculated}: PaymentBreakdownProps) {

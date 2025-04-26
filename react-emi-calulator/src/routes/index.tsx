@@ -48,26 +48,31 @@ function App() {
 					<p className='mt-2 text-muted-foreground'>Calculate your loan EMI, total interest payable, and more</p>
 				</div>
 
-				<div className='grid grid-cols-1 gap-8 md:grid-cols-2'>
-					{/* Input Form */}
-					<InputForm
-						principal={principal}
-						setPrincipal={setPrincipal}
-						interestRate={interestRate}
-						setInterestRate={setInterestRate}
-						loanTenure={loanTenure}
-						setLoanTenure={setLoanTenure}
-						onCalculate={handleCalculate}
-					/>
-
-					<div className='space-y-6'>
-						<ResultsDisplay emi={emi} totalInterest={totalInterest} totalPayment={totalPayment} isCalculated={isCalculated} />
-
-						<PaymentBreakdown principal={principal} totalInterest={totalInterest} isCalculated={isCalculated} />
+				{/* Dynamic layout based on whether calculation has been done */}
+				<div className={`grid grid-cols-1 gap-8 ${isCalculated ? "md:grid-cols-2" : "md:grid-cols-1"}`}>
+					{/* Input Form - full width when no results, half-width when results are shown */}
+					<div className={isCalculated ? "" : "md:max-w-xl md:mx-auto md:w-full"}>
+						<InputForm
+							principal={principal}
+							setPrincipal={setPrincipal}
+							interestRate={interestRate}
+							setInterestRate={setInterestRate}
+							loanTenure={loanTenure}
+							setLoanTenure={setLoanTenure}
+							onCalculate={handleCalculate}
+						/>
 					</div>
+
+					{/* Results area - only shown when calculation has been performed */}
+					{isCalculated && (
+						<div className='space-y-6'>
+							<ResultsDisplay emi={emi} totalInterest={totalInterest} totalPayment={totalPayment} isCalculated={isCalculated} />
+							<PaymentBreakdown principal={principal} totalInterest={totalInterest} isCalculated={isCalculated} />
+						</div>
+					)}
 				</div>
 
-				{/* EMI Chart */}
+				{/* EMI Chart - only shown when calculation has been performed */}
 				<EMIChart principal={principal} interestRate={interestRate} loanTenure={loanTenure} emi={emi} isCalculated={isCalculated} />
 			</div>
 		</div>
