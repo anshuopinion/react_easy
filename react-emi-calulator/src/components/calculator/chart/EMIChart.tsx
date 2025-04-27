@@ -1,26 +1,8 @@
-import {TrendingUp} from "lucide-react";
-import {Area, AreaChart, CartesianGrid, XAxis} from "recharts";
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
-import {type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent} from "@/components/ui/chart";
+import {Area, AreaChart, CartesianGrid, Legend, ReferenceLine, ResponsiveContainer, XAxis, YAxis} from "recharts";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
+import {ChartTooltip} from "@/components/ui/chart";
 import {generateAmortizationData} from "../utils";
-const chartData = [
-	{month: "January", desktop: 186, mobile: 80},
-	{month: "February", desktop: 305, mobile: 200},
-	{month: "March", desktop: 237, mobile: 120},
-	{month: "April", desktop: 73, mobile: 190},
-	{month: "May", desktop: 209, mobile: 130},
-	{month: "June", desktop: 214, mobile: 140},
-];
-const chartConfig = {
-	desktop: {
-		label: "Desktop",
-		color: "hsl(var(--chart-1))",
-	},
-	mobile: {
-		label: "Mobile",
-		color: "hsl(var(--chart-2))",
-	},
-} satisfies ChartConfig;
+import {CustomToolTip} from "./CustomToolTip";
 
 interface EMIChartProps {
 	principal: number;
@@ -34,6 +16,14 @@ export function EMIChart(props: EMIChartProps) {
 	const {principal, interestRate, loanTenure, emi, isCaclulated} = props;
 	const chartData3 = generateAmortizationData(principal, interestRate, loanTenure, emi);
 	console.log("chartData3", chartData3);
+
+	const chartColors = {
+		balance: "#34d399",
+		principalPaid: "#6366f1",
+		interestPaid: "#fb7185",
+		grid: "#e2e8f0",
+	};
+
 	return (
 		<Card>
 			<CardHeader>
@@ -49,34 +39,103 @@ export function EMIChart(props: EMIChartProps) {
 					)}
 				</CardDescription>
 			</CardHeader>
-			<CardContent>
-				<ChartContainer config={chartConfig}>
+			<CardContent className='h-[400px] w-full'>
+				<ResponsiveContainer width='100%' height='100%'>
 					<AreaChart
-						accessibilityLayer
-						data={chartData}
+						data={chartData3}
 						margin={{
-							left: 12,
-							right: 12,
+							top: 20,
+							right: 30,
+							left: 10,
+							bottom: 20,
 						}}
 					>
-						<CartesianGrid vertical={false} />
-						<XAxis dataKey='month' tickLine={false} axisLine={false} tickMargin={8} tickFormatter={value => value.slice(0, 3)} />
-						<ChartTooltip cursor={false} content={<ChartTooltipContent indicator='dot' />} />
-						<Area dataKey='mobile' type='natural' fill='var(--color-mobile)' fillOpacity={0.4} stroke='var(--color-mobile)' stackId='a' />
-						<Area dataKey='desktop' type='natural' fill='var(--color-desktop)' fillOpacity={0.4} stroke='var(--color-desktop)' stackId='a' />
+						<CartesianGrid strokeDasharray='3 3' stroke={chartColors.grid} opacity={0.5} vertical={false} />
+
+						<XAxis
+							dataKey='label'
+							tick={{fontSize: 12}}
+							axisLine={{
+								stroke: chartColors.grid,
+							}}
+							tickLine={{
+								stroke: chartColors.grid,
+								strokeWidth: 1,
+								strokeOpacity: 0.5,
+							}}
+							padding={{left: 10, right: 10}}
+						/>
+						<YAxis
+							tickFormatter={value => {
+								if (value >= 10000000) return `${(value / 10000000).toFixed(1)}Cr`;
+								if (value >= 100000) return `${(value / 100000).toFixed(1)}L`;
+								return value.toString();
+							}}
+							axisLine={{
+								stroke: chartColors.grid,
+							}}
+							tickLine={{
+								stroke: chartColors.grid,
+								strokeWidth: 1,
+								strokeOpacity: 0.5,
+							}}
+						/>
+
+						<ReferenceLine
+							x={chartData3[Math.floor(chartData3.length / 2)]?.label}
+							stroke='#94a3b8'
+							strokeDasharray='3 3'
+							label={{
+								value: "Halfway",
+								position: "top",
+								fill: "#94a3b8",
+								fontSize: 12,
+							}}
+						/>
+						<Legend
+							wrapperStyle={{
+								paddingTop: 10,
+								fontSize: 12,
+							}}
+							formatter={value => {
+								return <span className='text-sm font-medium'>{value}</span>;
+							}}
+						/>
+						<ChartTooltip cursor={false} content={<CustomToolTip />} />
+
+						<Area
+							type='monotone'
+							dataKey='balance'
+							stackId='1'
+							stroke={chartColors.balance}
+							fill={chartColors.balance}
+							fillOpacity={0.6}
+							name='Outstanding Balance'
+							activeDot={{r: 6, strokeWidth: 0}}
+						/>
+						<Area
+							type='monotone'
+							dataKey='principalPaid'
+							stackId='2'
+							stroke={chartColors.principalPaid}
+							fill={chartColors.principalPaid}
+							fillOpacity={0.6}
+							name='Principal Paid'
+							activeDot={{r: 5, strokeWidth: 0}}
+						/>
+						<Area
+							type='monotone'
+							dataKey='interestPaid'
+							stackId='2'
+							stroke={chartColors.interestPaid}
+							fill={chartColors.interestPaid}
+							fillOpacity={0.6}
+							name='Interest Paid'
+							activeDot={{r: 5, strokeWidth: 0}}
+						/>
 					</AreaChart>
-				</ChartContainer>
+				</ResponsiveContainer>
 			</CardContent>
-			<CardFooter>
-				<div className='flex w-full items-start gap-2 text-sm'>
-					<div className='grid gap-2'>
-						<div className='flex items-center gap-2 font-medium leading-none'>
-							Trending up by 5.2% this month <TrendingUp className='h-4 w-4' />
-						</div>
-						<div className='flex items-center gap-2 leading-none text-muted-foreground'>January - June 2024</div>
-					</div>
-				</div>
-			</CardFooter>
 		</Card>
 	);
 }

@@ -3,7 +3,7 @@ export const calculateEMI = (amount: number, rate: number, months: number) => {
 
 	// Calculate EMI using the formula: P * r * (1 + mr)^n / ((1 + mr)^n - 1)
 
-	const emi = (amount * montlyRate * Math.pow(1 + rate, montlyRate)) / (Math.pow(1 + montlyRate, months) - 1);
+	const emi = (amount * montlyRate * Math.pow(1 + montlyRate, months)) / (Math.pow(1 + montlyRate, months) - 1);
 
 	return isNaN(emi) || !isFinite(emi) ? 0 : emi;
 };
@@ -12,7 +12,7 @@ export const calculateTotalPayment = (emi: number, months: number) => {
 	return emi * months;
 };
 export const calculateTotalIntreset = (totalPayment: number, amount: number) => {
-	return amount - totalPayment;
+	return totalPayment - amount;
 };
 
 export const formatCurrency = (amount: number) => {

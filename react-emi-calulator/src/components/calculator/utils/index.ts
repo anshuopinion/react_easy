@@ -11,8 +11,6 @@ export function generateAmortizationData(principal: number, interestRate: number
 	// don't calculuate if no emi is present
 	if (emi === 0) return [];
 
-	console.log("i am working");
-
 	const monthlyRate = interestRate / 12 / 100;
 
 	let balance = principal;
@@ -30,7 +28,7 @@ export function generateAmortizationData(principal: number, interestRate: number
 				totalPaid: 0,
 				principalPaid: 0,
 				interestPaid: 0,
-				label: "start",
+				label: "0",
 			});
 			continue;
 		}
@@ -74,4 +72,6 @@ export function generateAmortizationData(principal: number, interestRate: number
 			label,
 		});
 	}
+
+	return schedule;
 }

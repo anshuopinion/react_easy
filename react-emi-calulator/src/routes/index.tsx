@@ -67,7 +67,11 @@ function App() {
 						<PaymentBreakDown principal={principal} totalInterest={totalInterest} isCalculated={isCaclulated} />
 					</div>
 				</div>
-				<EMIChart principal={principal} interestRate={interestRate} loanTenure={loanTenure} emi={emi} isCaclulated={isCaclulated} />
+				{isCaclulated && (
+					<div className=''>
+						<EMIChart principal={principal} interestRate={interestRate} loanTenure={loanTenure} emi={emi} isCaclulated={isCaclulated} />
+					</div>
+				)}
 			</div>
 		</div>
 	);
