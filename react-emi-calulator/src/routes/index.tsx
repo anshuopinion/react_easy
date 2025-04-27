@@ -1,3 +1,4 @@
+import {EMIChart} from "@/components/calculator/chart/EMIChart";
 import {InputForm} from "@/components/calculator/InputForm";
 import {PaymentBreakDown} from "@/components/calculator/PaymentBreakDown";
 import {ResultsDisplay} from "@/components/calculator/ResultsDisplay";
@@ -66,6 +67,7 @@ function App() {
 						<PaymentBreakDown principal={principal} totalInterest={totalInterest} isCalculated={isCaclulated} />
 					</div>
 				</div>
+				<EMIChart principal={principal} interestRate={interestRate} loanTenure={loanTenure} emi={emi} isCaclulated={isCaclulated} />
 			</div>
 		</div>
 	);
